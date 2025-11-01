@@ -41,12 +41,25 @@ lerna-debug.log*
 *.temp
 .cache/
 
-# Build outputs (will be handled by project-specific gitignores)
+# Build outputs
 dist/
 build/
 *.apk
 *.aab
 *.ipa
+
+# React Native - Android & iOS folders (exclude entire folders)
+Todo/android/
+Todo/ios/
+**/android/
+**/ios/
+
+# CocoaPods
+**/Pods/
+**/vendor/bundle/
+
+# Metro bundler
+.metro-bundler-cache/
 
 # Misc
 *.pem
