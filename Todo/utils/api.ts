@@ -12,13 +12,15 @@ import { Platform } from 'react-native';
 // 3. Make sure your phone and computer are on the same Wi-Fi network
 // 4. Ensure Windows Firewall allows connections on port 3000
 
-// IMPORTANT: Replace this with your computer's IP address when using a physical device
-// Example: 'http://192.168.1.100:3000'
-// Your IP address: 192.168.1.73
-const MANUAL_HOST: string = 'http://192.168.1.73:3000';
+// IMPORTANT: For physical devices set this to your PC's LAN IP (eg 'http://192.168.1.100:3000').
+// When running the app on a phone connected via USB we recommend using
+// adb reverse and pointing the app at localhost. Set MANUAL_HOST to
+// 'http://localhost:3000' in that case. Revert to your LAN IP when testing
+// over Wi-Fi or on other devices.
+const MANUAL_HOST: string = 'http://localhost:3000';
 
 export const API_URL = (() => {
-  if (MANUAL_HOST) {
+  if (MANUAL_HOST && MANUAL_HOST.trim() !== '') {
     const cleanHost = MANUAL_HOST.replace(/\/+$/, '');
     return cleanHost + '/api';
   }

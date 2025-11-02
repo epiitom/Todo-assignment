@@ -5,15 +5,15 @@ import TodoItem from './TodoItem';
 export default function TodoList() {
   // State Hooks
   const [tasks, setTasks] = useState([
-    { id: '1', text: 'Doctor Appointment', completed: true },
-    { id: '2', text: 'Meeting at School', completed: false },
+    { _id: '1', title: 'Doctor Appointment', completed: true },
+    { _id: '2', title: 'Meeting at School', completed: false },
   ]);
   const [text, setText] = useState('');
 
   // Function to Add Task
   function addTask() {
     if (text.trim()) {
-      const newTask = { id: Date.now().toString(), text: text.trim(), completed: false };
+      const newTask = { _id: Date.now().toString(), title: text.trim(), completed: false };
       setTasks(prev => [...prev, newTask]);
       setText('');
     }
@@ -21,12 +21,12 @@ export default function TodoList() {
 
   // Function to Delete Task
   function deleteTask(id: string) {
-    setTasks(tasks.filter(task => task.id !== id));
+    setTasks(tasks.filter(task => task._id !== id));
   }
 
   // Function to Toggle Task Completion
   function toggleCompleted(id: string) {
-    setTasks(tasks.map(task => (task.id === id ? { ...task, completed: !task.completed } : task)));
+    setTasks(tasks.map(task => (task._id === id ? { ...task, completed: !task.completed } : task)));
   }
 
   // Render TodoList Component
@@ -44,7 +44,7 @@ export default function TodoList() {
       <View style={styles.listContainer}>
         {tasks.map(task => (
           <TodoItem
-            key={task.id}
+            key={task._id}
             task={task}
             deleteTask={deleteTask}
             toggleCompleted={toggleCompleted}

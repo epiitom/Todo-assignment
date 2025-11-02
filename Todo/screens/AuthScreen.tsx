@@ -32,24 +32,60 @@ export default function AuthScreen({ mode, onSuccess, onBack }: Props) {
 
     setLoading(true);
     try {
-        const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-        const response = await fetch(`${API_URL}${endpoint}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, password }),
+      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const url = `${API_URL}${endpoint}`;
+
+      // Use AbortController to timeout the request after 10s
+      const controller = new AbortController();
+      const timeoutMs = 10000;
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+      console.log(`Auth request -> ${url}`);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        signal: controller.signal,
       });
 
-      const data = await response.json();
+      clearTimeout(timeout);
+
+      // Try to parse JSON safely; backend may sometimes return non-JSON errors
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        console.warn('Failed to parse JSON from auth response', parseError);
+      }
 
       if (response.ok) {
-        onSuccess(data.token);
+        const token = data?.token;
+        if (token) {
+          onSuccess(token);
+        } else {
+          console.warn('Auth success response missing token', { status: response.status, data });
+          Alert.alert('Error', 'Authentication succeeded but token missing from server response.');
+        }
       } else {
-        Alert.alert('Error', data.error || 'Something went wrong');
+        // Prefer server-provided message, otherwise show status code + text
+        const serverMessage = data?.error || data?.message;
+        const message = serverMessage || `Request failed: ${response.status} ${response.statusText}`;
+        console.warn('Auth request failed', { url, status: response.status, responseData: data });
+        Alert.alert('Error', message);
       }
-    } catch (error) {
-      Alert.alert('Error', 'Network error. Make sure backend is running.');
+    } catch (error: any) {
+      // Handle different error kinds clearly
+      console.error('Auth request error:', error);
+      if (error.name === 'AbortError') {
+        Alert.alert('Error', `Request timed out after ${10000 / 1000}s. Make sure backend is running and reachable.`);
+      } else if (error.message) {
+        Alert.alert('Error', `Network error: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'Network error. Make sure backend is running.');
+      }
     } finally {
       setLoading(false);
     }
