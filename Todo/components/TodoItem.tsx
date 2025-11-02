@@ -42,14 +42,22 @@ export default function TodoItem({ task, deleteTask, toggleCompleted }: Props) {
     <View style={[styles.container, task.completed && styles.containerCompleted]}>
       <View style={styles.content}>
         <View style={styles.header}>
-          <CheckBox
-            value={task.completed}
-            onValueChange={() => toggleCompleted(taskId)}
-            tintColor={priorityColor}
-            onCheckColor={priorityColor}
-            onTintColor={priorityColor}
-          />
-          <View style={styles.titleContainer}>
+          <View style={styles.checkboxContainer}>
+            <CheckBox
+              value={task.completed}
+              onValueChange={() => toggleCompleted(taskId)}
+              tintColor={task.completed ? '#4CAF50' : '#d0d0d0'}
+              onCheckColor="#fff"
+              onTintColor="#4CAF50"
+              boxType="square"
+              tintColors={{ true: '#4CAF50', false: '#d0d0d0' }}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.titleContainer}
+            onPress={() => toggleCompleted(taskId)}
+            activeOpacity={0.7}
+          >
             <Text style={[styles.title, task.completed && styles.completed]} numberOfLines={2}>
               {task.title}
             </Text>
@@ -60,7 +68,7 @@ export default function TodoItem({ task, deleteTask, toggleCompleted }: Props) {
                 </Text>
               </View>
             )}
-          </View>
+          </TouchableOpacity>
         </View>
 
         {task.description && task.description.trim() && (
@@ -124,9 +132,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 8,
   },
+  checkboxContainer: {
+    marginTop: 2,
+    marginRight: 12,
+  },
   titleContainer: {
     flex: 1,
-    marginLeft: 12,
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
@@ -134,13 +145,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#1a1a1a',
     flex: 1,
+    lineHeight: 24,
   },
   completed: {
     textDecorationLine: 'line-through',
     color: '#888',
+    fontWeight: '500',
   },
   priorityBadge: {
     paddingHorizontal: 8,

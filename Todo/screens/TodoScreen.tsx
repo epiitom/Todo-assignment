@@ -176,13 +176,49 @@ export default function TodoScreen({ token, onLogout }: Props) {
             numberOfLines={3}
           />
 
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowDatePicker(true)}
-          >
+          <View>
             <Text style={styles.dateButtonLabel}>📅 Start Date</Text>
-            <Text style={styles.dateButtonText}>{dateTime.toLocaleString()}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={styles.dateButtonText}>
+                {dateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}{' '}
+                {dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.quickDateButtons}>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const today = new Date();
+                  setDateTime(today);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Today</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  setDateTime(tomorrow);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Tomorrow</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const nextWeek = new Date();
+                  nextWeek.setDate(nextWeek.getDate() + 7);
+                  setDateTime(nextWeek);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Next Week</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {showDatePicker && (
             <DateTimePicker
@@ -195,13 +231,52 @@ export default function TodoScreen({ token, onLogout }: Props) {
             />
           )}
 
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowDeadlinePicker(true)}
-          >
+          <View style={{ marginTop: 8 }}>
             <Text style={styles.dateButtonLabel}>⏰ Deadline</Text>
-            <Text style={styles.dateButtonText}>{deadline.toLocaleString()}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDeadlinePicker(true)}
+            >
+              <Text style={styles.dateButtonText}>
+                {deadline.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}{' '}
+                {deadline.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            </TouchableOpacity>
+            <View style={styles.quickDateButtons}>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const today = new Date();
+                  today.setHours(23, 59, 0, 0);
+                  setDeadline(today);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Today</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  tomorrow.setHours(23, 59, 0, 0);
+                  setDeadline(tomorrow);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Tomorrow</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.quickDateButton}
+                onPress={() => {
+                  const nextWeek = new Date();
+                  nextWeek.setDate(nextWeek.getDate() + 7);
+                  nextWeek.setHours(23, 59, 0, 0);
+                  setDeadline(nextWeek);
+                }}
+              >
+                <Text style={styles.quickDateButtonText}>Next Week</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {showDeadlinePicker && (
             <DateTimePicker
@@ -361,6 +436,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#1a1a1a',
     fontWeight: '500',
+  },
+  quickDateButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: -10,
+    marginBottom: 16,
+  },
+  quickDateButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    backgroundColor: '#f0f4f8',
+    borderWidth: 1,
+    borderColor: '#e1e8ed',
+    alignItems: 'center',
+  },
+  quickDateButtonText: {
+    fontSize: 13,
+    color: '#007AFF',
+    fontWeight: '600',
   },
   priorityContainer: {
     flexDirection: 'row',
